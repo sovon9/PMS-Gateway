@@ -22,7 +22,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
 import com.sovon9.RRMS_Gateway.config.SecureRouteValidator;
+import com.sovon9.RRMS_Gateway.constants.StringConstants;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import reactor.core.publisher.Mono;
 
@@ -82,7 +84,7 @@ public class JwtAuthenticationFilter implements GlobalFilter
 //            return exchange.getResponse().setComplete();
         	LOGGER.error("Null Token Received from JwtAuthenticationFilter");
         	exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
-    	    exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, "/unauthorized");
+    	    exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, "/portal/login");
     	    return exchange.getResponse().setComplete();
         }
          
@@ -93,9 +95,9 @@ public class JwtAuthenticationFilter implements GlobalFilter
         	{
 //        		exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
 //                return exchange.getResponse().setComplete();  // Invalid token
-        		LOGGER.error("Null Token Received from JwtAuthenticationFilter");
+        		LOGGER.error("Invalid Token Received from JwtAuthenticationFilter");
             	exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
-        	    exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, "/unauthorized");
+        	    exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, "/portal/login");
         	    return exchange.getResponse().setComplete();
         	}
 			// Extract username from token
@@ -126,7 +128,16 @@ public class JwtAuthenticationFilter implements GlobalFilter
 
 			return chain.filter(modifiedExchange);
         	
-        } catch (JwtException e) {
+        }
+        catch(ExpiredJwtException e)
+        {
+        	LOGGER.error(e.getMessage());
+        	exchange.getResponse().setStatusCode(HttpStatus.SEE_OTHER);
+    	    exchange.getResponse().getHeaders().set(HttpHeaders.LOCATION, "/portal/login");
+    	    return exchange.getResponse().setComplete();
+        }
+        catch (JwtException e) {
+        	
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }

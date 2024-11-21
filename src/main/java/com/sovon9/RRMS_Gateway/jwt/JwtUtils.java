@@ -18,6 +18,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import com.sovon9.RRMS_Gateway.constants.StringConstants;
+import com.sovon9.RRMS_Gateway.exception.JWTException;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -51,6 +54,7 @@ public class JwtUtils
 	 * validate the JWT token on basis of secret key
 	 * @param authToken
 	 * @return
+	 * @throws JWTException 
 	 */
 	public boolean validateJWTToken(String authToken)
 	{
@@ -61,9 +65,10 @@ public class JwtUtils
 	            return true;
 	        } catch (MalformedJwtException e) {
 	            LOGGER.error("Invalid JWT token: {}", e.getMessage());
-	        } catch (ExpiredJwtException e) {
+	        } /*catch (ExpiredJwtException e) {
 	            LOGGER.error("JWT token is expired: {}", e.getMessage());
-	        } catch (UnsupportedJwtException e) {
+	            throw new JWTException(StringConstants.TOKENEXPIRED);
+	        }*/ catch (UnsupportedJwtException e) {
 	            LOGGER.error("JWT token is unsupported: {}", e.getMessage());
 	        } catch (IllegalArgumentException e) {
 	            LOGGER.error("JWT claims string is empty: {}", e.getMessage());
