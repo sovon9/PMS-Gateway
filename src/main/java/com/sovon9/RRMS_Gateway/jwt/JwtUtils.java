@@ -95,7 +95,7 @@ public class JwtUtils
 	        return Jwts.parser()
 	        		.verifyWith((SecretKey) key())
 	                .build()
-	                .parseSignedClaims(token)
+	                .parseSignedClaims(token) //parse a signed JWT and extract its claims
 	                .getPayload();
 	    }
 	 

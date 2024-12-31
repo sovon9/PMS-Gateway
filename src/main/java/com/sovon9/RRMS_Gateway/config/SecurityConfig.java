@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import org.springframework.security.web.server.context.NoOpServerSecurityContextRepository;
 
 @EnableWebFluxSecurity
 @Configuration
@@ -15,7 +14,7 @@ public class SecurityConfig
 	@Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
-            .csrf().disable()  // Disable CSRF as we are using stateless JWT tokens
+            .csrf(csrf->csrf.disable())  // Disable CSRF as we are using stateless JWT tokens
 //            .authorizeExchange(auth->auth.pathMatchers("/signin","/login")
 //            		.permitAll()
 //            		)

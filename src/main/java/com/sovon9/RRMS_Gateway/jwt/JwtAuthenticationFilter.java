@@ -39,24 +39,14 @@ public class JwtAuthenticationFilter implements GlobalFilter
 	private Long jwtExpiration;
 	@Autowired
 	private JwtUtils jwtUtils;
-//	@Value("${security.excluded.paths}")
-//	private String[] excludedPaths;
-	
-	//private List<String> EXCLUDED_PATHS;
 	@Autowired
 	private SecureRouteValidator routeValidator;
-	
-//	@PostConstruct
-//	public void getExcludedPaths()
-//	{
-//		EXCLUDED_PATHS = Arrays.asList(excludedPaths);
-//	}
 	
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
 	{
 		String path = exchange.getRequest().getURI().getPath();
-		LOGGER.error("Path====> " + path);
+		//LOGGER.error("Path====> " + path);
 		// If the request is to one of the excluded paths, skip JWT validation
 		 if (routeValidator.isSecured.test(path)) {
 	            return chain.filter(exchange);
@@ -126,7 +116,7 @@ public class JwtAuthenticationFilter implements GlobalFilter
 			// Mutate the exchange with the modified request
 			ServerWebExchange modifiedExchange = exchange.mutate().request(modifiedRequest).build();
 
-			return chain.filter(modifiedExchange);
+			return chain.filter(modifiedExchange);// Continue to next filter
         	
         }
         catch(ExpiredJwtException e)
